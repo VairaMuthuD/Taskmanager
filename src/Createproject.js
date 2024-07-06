@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Col, Form, Row, Button } from 'react-bootstrap';
 import axios from 'axios';
+import { getProjectGroups } from './Redux toolkit/projectSlice';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { UserDataContext } from './UsersNameContext';
 
 const Createproject = () => {
 
-    const [projectList, setProjectList] = useState([])
+    const { logInUser } = useContext(UserDataContext)
+
+    // const [projectGroup, setProjectGroup] = useState([])
 
     const [projectData, setProjectData] = useState({
         "ProjectName": "",
@@ -16,56 +22,71 @@ const Createproject = () => {
         "Visibility": ""
     })
 
+    const dispatch = useDispatch()
 
+    const projectGroup = useSelector((item)=>item.projects.projectGroup)
+
+    console.log(projectGroup)
+
+    const today = new Date();
+
+    today.setMonth(today.getMonth() + 1)
+
+    const date = today.getDate() + '-' + today.getMonth() + '-' + today.getFullYear();
+
+    console.log(date)
 
     const handleSubmit = () => {
         console.log(projectData)
-    
-    if(projectData.ProjectName && projectData.ProjectSummary && projectData.ProjectDescription && projectData.ProjectGroup  && projectData.Visibility){
 
-        // axios
-        // .post('https://taskmanager-api.azurewebsites.net/api/ProjectInfo/SaveNewProject',
-        //     {
-        //         {
-        //             "projectName": "string",
-        //             "projectSummary": "string",
-        //             "projectDescription": "string",
-        //             "projectgroup": "string",
-        //             "projectvisibility": "string"
-        //           }
-        //     },{
-        //         headers:{
-        //             "isLogin": true,
-        //             "Content-Type": "application/json"
-        //         }
-        //     })
-        // .then((res) => {
-        //     user(res.data.userName)
-        //     console.log(res);
-        //     console.log(res.data);
-        //     setRedirectPage(true)
-        // })
-        // .catch((err) => {
-        //     console.log(err)
-        // })
-     
+        if (projectData.ProjectName && projectData.ProjectSummary && projectData.ProjectDescription && projectData.ProjectGroup && projectData.Visibility) {
 
-        setProjectList((prev)=>[...prev,projectData])
-    }
-        setProjectData({ "ProjectName": "",
+            axios
+                .post('https://taskmanager-api.azurewebsites.net/api/ProjectInfo/SaveNewProject',
+
+                    {
+                        "projectName": projectData.ProjectName,
+                        "projectSummary": projectData.ProjectSummary,
+                        "projectDescription": projectData.ProjectDescription,
+                        "projectgroup": projectData.ProjectGroup,
+                        "projectvisibility": projectData.Visibility,
+                    }, {
+                    headers: {
+                        "CurrentUser": logInUser,
+                        "CurrentRole": "Administrator"
+                    }
+                }
+
+                )
+                .then((res) => {
+                    console.log(res);
+                    console.log(res.data);
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+
+
+            // setProjectList((prev)=>[...prev,projectData])
+        }
+        setProjectData({
+            "ProjectName": "",
             "ProjectSummary": "",
             "ProjectDescription": "",
             "ProjectGroup": "",
             "Owner": "",
             "DateCreated": "",
-            "Visibility": ""})
+            "Visibility": ""
+        })
     }
 
-    useEffect(()=>{
-        console.log(projectList)
-    },[projectList])
-    
-    
+    useEffect(() => {
+        dispatch(getProjectGroups());
+    }, [dispatch]);
+
+   
+
+
 
 
     return (
@@ -103,7 +124,16 @@ const Createproject = () => {
                         Project Group
                     </Form.Label>
                     <Col sm="6">
-                        <Form.Control type="text" name="ProjectGroup" onChange={(e) => setProjectData((prev) => ({ ...prev, [e.target.name]: e.target.value }))} value={projectData.ProjectGroup} />
+                        <Form.Control as="select" name="ProjectGroup" onChange={(e) => setProjectData((prev) => ({ ...prev, [e.target.name]: e.target.value }))} value={projectData.ProjectGroup}>
+                            <option value="" disabled>
+                                Select a project group
+                            </option>
+                            {projectGroup.map((item, index) => (
+                                <option key={index} value={item}>
+                                    {item}
+                                </option>
+                            ))}
+                        </Form.Control>
                     </Col>
                 </Form.Group>
 
@@ -112,7 +142,7 @@ const Createproject = () => {
                         Owner
                     </Form.Label>
                     <Col sm="6">
-                        <Form.Control type="text" name="Owner" disabled value={projectData.Owner} />
+                        <Form.Control type="text" name="Owner" disabled value={logInUser} />
                     </Col>
                 </Form.Group>
 
@@ -121,7 +151,7 @@ const Createproject = () => {
                         Date Created
                     </Form.Label>
                     <Col sm="3">
-                        <Form.Control type="date" name="DateCreated" onChange={(e) => setProjectData((prev) => ({ ...prev, [e.target.name]: e.target.value }))} value={projectData.DateCreated} />
+                        <Form.Control type="text" name="DateCreated" disabled value={date} />
                     </Col>
                 </Form.Group>
 
@@ -162,7 +192,7 @@ const Createproject = () => {
 
             </Form>
 
-            
+
 
         </div>
     )

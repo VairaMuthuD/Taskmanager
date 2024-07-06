@@ -4,14 +4,18 @@ import { IoMdEyeOff } from "react-icons/io";
 import { IoMdEye } from "react-icons/io";
 import axios from "axios"
 import { useNavigate } from 'react-router-dom';
-import UserDataContext from './UsersNameContext'
+import {UserDataContext} from './UsersNameContext'
+import { useDispatch } from 'react-redux';
+import { handleLogInUserAcrossComponent, handleUserRoles } from './Redux toolkit/projectSlice';
 
 const Login = ({user}) => {
     const [showPassword, setShowPassword] = useState(false)
 
     const navigate = useNavigate();
 
-    const {handleLogInUserAcrossComponent, logInUser} = useContext(UserDataContext);
+    const dispatch = useDispatch();
+
+    // const {handleLogInUserAcrossComponent, logInUser} = useContext(UserDataContext);
 
     const[userName, setUserName] = useState('')
     const[passWord, setPassWord] = useState('')
@@ -32,7 +36,8 @@ const Login = ({user}) => {
                 })
             .then((res) => {
                 user(res.data.userName)
-                handleLogInUserAcrossComponent(res.data.userName)
+                dispatch(handleLogInUserAcrossComponent(res.data.userName))
+                dispatch(handleUserRoles(res.data.userRoles))
                 console.log(res);
                 console.log(res.data);
                 setRedirectPage(true)

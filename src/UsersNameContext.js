@@ -1,4 +1,4 @@
-import React, {useState, createContext} from 'react'
+import React, {useState, createContext, useEffect} from 'react'
 import Createproject from './Createproject';
 import App from './App';
 
@@ -11,6 +11,10 @@ const UsersNameContext = ({children}) => {
         setLogInUser(val)
     }
 
+    useEffect(()=>{
+        console.log(logInUser)
+    },[logInUser])
+
     return (
         <UserDataContext.Provider value={{handleLogInUserAcrossComponent, logInUser}}>
            {children}
@@ -18,4 +22,4 @@ const UsersNameContext = ({children}) => {
     )
 }
 
-export default {UsersNameContext , UserDataContext }
+export {UsersNameContext , UserDataContext }

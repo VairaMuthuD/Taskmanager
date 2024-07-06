@@ -4,17 +4,23 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router } from 'react-router-dom';
-import UsersNameContext from './UsersNameContext';
+import { UsersNameContext } from './UsersNameContext';
+import { ProjectNameReducer } from './ProjectNameReducer';
+import { Provider } from 'react-redux'
+import { store } from './Redux toolkit/store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <UsersNameContext>
-    <Router>
-    
-    <App />
-         
-    </Router>
-    </UsersNameContext> 
+        <ProjectNameReducer>
+            <Provider store={store}>
+                <Router>
+                    <App />
+                </Router>
+            </Provider>
+        </ProjectNameReducer>
+
+    </UsersNameContext>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Nav, Navbar, NavDropdown, Button } from 'react-bootstrap';
-import { Routes, Route, BrowserRouter as Router, Link } from 'react-router-dom'
+import { Routes, Route, BrowserRouter as Router, Link, Navigate } from 'react-router-dom'
 import Login from './Login';
 import Home from './Home';
 import Createproject from './Createproject';
 import { FaUserLarge } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
 import { IoMenu } from "react-icons/io5";
+import Projectdetails from './Projectdetails';
+import LoginUserRoles from './LoginUserRoles';
 
 const App = () => {
 
@@ -30,7 +32,7 @@ const App = () => {
     console.log(loggedInUser)
   }, [loggedInUser])
 
-  const handleShow = () => { setShow(true); console.log(show) }
+  // const handleShow = () => { setShow(true); console.log(show) }
 
   return (
     <div>
@@ -38,8 +40,8 @@ const App = () => {
       <Navbar expand="lg" bg="dark" data-bs-theme="dark">
         <Container>
           {loggedInUser ?
-          <Navbar.Brand>
-            <Button style={{ height: '40px', color: 'black' }} onClick={() => { handleShow(); }}>
+          <Navbar.Brand className='justify-content-start'>
+            <Button style={{ height: '40px', color: 'black' }} onClick={()=>{setShow(!show)}}>
               <IoMenu />
             </Button>
           </Navbar.Brand>
@@ -49,6 +51,9 @@ const App = () => {
           <Navbar.Brand as={Link} to="/">Home</Navbar.Brand>
           {/* <Navbar.Toggle aria-controls="basic-navbar-nav" /> */}
           <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
+            <Nav>
+              {loggedInUser ? <LoginUserRoles /> : '' }
+            </Nav>
             <Nav>
 
               {loggedInUser ? (
@@ -72,22 +77,13 @@ const App = () => {
 
       <Routes>
         <Route path="/Login" element={<Login user={handleLogInUser} />} />
-        <Route path="/" element={<Home show={show} setShow={setShow} />} />
+        <Route path="/" element={loggedInUser ? <Home show={show} setShow={setShow} /> : <Navigate to="/login" />  } />
+      
         <Route path="/createproject" element={<Createproject />} />
+        <Route path="/projectdetails/:projectId" element={<Projectdetails />} />
 
       </Routes>
 
-
-      {/* <Offcanvas show={show} onHide={handleClose}>
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>PROJECTS</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-
-        <Button variant="primary" as={Link} to="/createproject">Create Project</Button>{' '}
-
-        </Offcanvas.Body>
-      </Offcanvas> */}
 
     </div>
   )
