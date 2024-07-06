@@ -20,7 +20,7 @@ const LoginUserRoles = () => {
   }, [dispatch, roles]);
 
     const handleUserRoleChange = (event) => {
-        dispatch(handleSelectedUserRole(event.target.value));
+        dispatch(handleSelectedUserRole(event.target.value))
       };
 
     return (
