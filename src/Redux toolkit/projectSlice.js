@@ -23,6 +23,27 @@ export const fetchProjects = createAsyncThunk('projects/fetchProjects', async ()
   });
 
 
+  export const createNewProjectGroup = createAsyncThunk('projects/createNewProjectGroup', async (newuserGroup) => {
+    const response = await axios.post('https://taskmanager-api.azurewebsites.net/api/Admin/AddNewProjectGroup', newuserGroup, {
+      headers: {
+        "CurrentUser": initialState.logInUser,
+        "CurrentRole": "Administrator"
+      }
+    });
+    return response.data;
+  });
+
+  export const createNewUser = createAsyncThunk('projects/createNewUser', async (newuser) => {
+    const response = await axios.post('https://taskmanager-api.azurewebsites.net/api/Admin/AddNewUser', newuser, {
+      headers: {
+        "CurrentUser": initialState.logInUser,
+        "CurrentRole": "Administrator"
+      }
+    });
+    return response.data;
+  });
+
+
 
   export const getProjectGroups = createAsyncThunk('projects/getProjectGroups', async () => {
     const response = await axios.get('https://taskmanager-api.azurewebsites.net/api/ProjectInfo/GetProjectGroups', {
@@ -85,8 +106,35 @@ export const projectSlice = createSlice({
           .addCase(getProjectGroups.fulfilled, (state, action) => {
             state.status = 'succeeded';
             state.projectGroup = action.payload;
+            console.log(action.payload)
           })
           .addCase(getProjectGroups.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.error.message;
+          })
+
+          .addCase(createNewUser.pending, (state) => {
+            state.status = 'loading';
+          })
+          .addCase(createNewUser.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            state.projectGroup = action.payload;
+            console.log(action.payload)
+          })
+          .addCase(createNewUser.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.error.message;
+          })
+
+          .addCase(createNewProjectGroup.pending, (state) => {
+            state.status = 'loading';
+          })
+          .addCase(createNewProjectGroup.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            state.projectGroup = action.payload;
+            console.log(action.payload)
+          })
+          .addCase(createNewProjectGroup.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.error.message;
           })
@@ -96,11 +144,6 @@ export const projectSlice = createSlice({
           })
           .addCase(editProjects.fulfilled, (state, action) => {
             state.status = 'succeeded';
-            // const index = state.projects.findIndex((user)=> user.id === action.payload.id)
-            // console.log(index)
-            // if (index !== -1) {
-            //     state.projects[index] = action.payload;
-            //   }
 
             state.projects = state.projects.map(project =>
               project.id === action.payload.id ? action.payload : project

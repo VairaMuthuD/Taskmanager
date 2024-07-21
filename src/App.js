@@ -9,6 +9,9 @@ import { useNavigate } from 'react-router-dom';
 import { IoMenu } from "react-icons/io5";
 import Projectdetails from './Projectdetails';
 import LoginUserRoles from './LoginUserRoles';
+import Admin from './Admin';
+import Addprojectgroup from './Addprojectgroup';
+import AddNewUser from './AddNewUser';
 
 const App = () => {
 
@@ -74,13 +77,22 @@ const App = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-
+      
       <Routes>
         <Route path="/Login" element={<Login user={handleLogInUser} />} />
+
         <Route path="/" element={loggedInUser ? <Home show={show} setShow={setShow} /> : <Navigate to="/login" />  } />
       
         <Route path="/createproject" element={<Createproject />} />
+
         <Route path="/projectdetails/:projectId" element={<Projectdetails />} />
+
+        <Route path="/admin" element={<Admin />} />
+
+        <Route path="/addprojectgroup" element={<Addprojectgroup />} />
+
+        <Route path="/addnewuser" element={<AddNewUser />} />
+
 
       </Routes>
 

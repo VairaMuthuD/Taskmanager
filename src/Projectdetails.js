@@ -76,14 +76,7 @@ const Projectdetails = () => {
     }
 
     const handleSubmit = () => {
-        // if (updatedUserData.id) {
-        //     dispatch(editProjects(updatedUserData));
-        //     handleClose();
-        // } else {
-        //     console.error('Invalid id:', updatedUserData.id);
-        //     // Handle invalid id scenario (e.g., show an error message)
-        // }
-
+        
         if (updatedUserData.id) {
             dispatch(editProjects(updatedUserData))
                 .then(() => {

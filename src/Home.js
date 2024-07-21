@@ -53,7 +53,7 @@ const Home = ({ show, setShow }) => {
                 })}
               </> : 'NO'}
           </ul>
-          <Button variant="primary" as={Link} to="/createproject">Create Project</Button>{' '}
+          <Button variant="primary" as={Link} to="/createproject">Create Project</Button>
 
         </Offcanvas.Body>
       </Offcanvas>
